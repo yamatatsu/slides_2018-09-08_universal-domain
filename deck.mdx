@@ -1,23 +1,64 @@
-import { Head } from 'mdx-deck'
+import { Head, Image } from 'mdx-deck'
 
 export { default as theme } from './theme'
 
 <Head>
-  <title>Presentation Title</title>
+  <title>universal domain</title>
 </Head>
 
-# Hello
+# universal domain
 
 ---
-
-## Edit this file
-
-To create your presentation
-
-```notes
-- Create speaker notes in fenced code blocks
-```
+# 自己紹介
+---
+<img src="assets/images/yamatatsu.PNG" width="180" />
 
 ---
+# 会社紹介
+- CureApp
+- 医療機器
+- アプリで医療機器を作る
+- RN, react, Node.js, mongodb
 
-<https://github.com/jxnblk/mdx-deck>
+---
+# ざっくり説明
+---
+どこでも動くコード(universal code)にビジネスロジックを集めて、それを各所で使い回す。
+
+<img src="https://i.gyazo.com/cf7a19c454ee0a6ec7d5b50ef7380046.png" width="200"/>
+<img src="https://i.gyazo.com/f290e0a72302605bb2562ea63a8ecaff.png" width="200"/>
+<img src="https://i.gyazo.com/3cb38025994fa14468a7863c461a55f3.png" width="200"/>
+
+---
+# どんなものを作っているのか
+---
+- RN
+  - 治療アプリ
+- react
+  - 医者、社内向けコンソール
+- Node.js
+  - mbaas
+
+---
+# どうやって作っているのか
+---
+ディレクトリ構成を見せる
+
+---
+# なぜこうするのか
+- テスタビリティ
+- 捨てラビリティ
+
+---
+# universal domainとは
+- universalでないとは何か
+
+---
+# domain used by redux
+CQRS
+CQRSにおけるドメイン
+redux thunkがdomainを使うなら
+
+# 課題
+- selectorsに始まるOOP,FPインピーダンスミスマッチ
+- コンテキスト境界を跨がったドメインオブジェクト設計
