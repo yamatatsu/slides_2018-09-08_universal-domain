@@ -1,64 +1,263 @@
 import { Head, Image } from 'mdx-deck'
+import { CodeSurfer } from "mdx-deck-code-surfer"
 
 export { default as theme } from './theme'
 
 <Head>
-  <title>universal domain</title>
+  <title>RNとreactの共有ロジックをmonorepoでつくる</title>
 </Head>
 
-# universal domain
+# RNとreactの共有ロジックをmonorepoでつくる
 
 ---
 # 自己紹介
 ---
 <img src="assets/images/yamatatsu.PNG" width="180" />
 
----
-# 会社紹介
 - CureApp
 - 医療機器
-- アプリで医療機器を作る
+- アプリで医療機器を作ってる
 - RN, react, Node.js, mongodb
-
----
-# ざっくり説明
----
-どこでも動くコード(universal code)にビジネスロジックを集めて、それを各所で使い回す。
-
-<img src="https://i.gyazo.com/cf7a19c454ee0a6ec7d5b50ef7380046.png" width="200"/>
-<img src="https://i.gyazo.com/f290e0a72302605bb2562ea63a8ecaff.png" width="200"/>
-<img src="https://i.gyazo.com/3cb38025994fa14468a7863c461a55f3.png" width="200"/>
 
 ---
 # どんなものを作っているのか
 ---
-- RN
-  - 治療アプリ
-- react
-  - 医者、社内向けコンソール
-- Node.js
-  - mbaas
+
+RN
+治療アプリ
+
+react
+医者、社内向けコンソール
+
+Node.js
+mbaas
 
 ---
-# どうやって作っているのか
+再掲
+## RNとreactの共有ロジックをmonorepoでつくる
 ---
-ディレクトリ構成を見せる
+# monorepo
+---
+複数アプリを同じリポジトリに入れて開発していく
+
+(適当)
 
 ---
-# なぜこうするのか
-- テスタビリティ
-- 捨てラビリティ
+<a href="https://github.com/lerna/lerna"><img src="https://i.gyazo.com/aa3143cf32f322359ef18f777858694e.png" width="602"/></a>
+https://github.com/lerna/lerna
+---
+lernaを使うとこんな感じになります
+---
+<CodeSurfer
+  lang="text"
+  code={`./
+  package.json
+  packages/
+    my-domain/
+      package.json
+      src/
+    my-app/
+      package.json
+      src/
+    my-web/
+      package.json
+      src/`}
+  steps={[
+    { range: [2, 2], notes: 'rootのpackage.json' },
+    { range: [3, 20], notes: 'local pkgたち' },
+    { range: [4, 6], notes: 'それぞれ完結している' },
+    { range: [7, 20], notes: 'my-domainを参照している' },
+  ]}
+/>
+---
+<CodeSurfer
+  lang="json"
+  title="package.json"
+  code={`{
+  "name": "app",
+  "dependencies": {
+    "my-domain": "*"
+  }
+}`}
+  steps={[
+    { range: [4, 4] },
+  ]}
+/>
 
 ---
-# universal domainとは
-- universalでないとは何か
+lernaの説明おわり
+---
+どんな感じにmonorepoしてるのか
+---
+<CodeSurfer
+  lang="text"
+  code={`./
+  package.json
+  packages/
+    domain/
+    app-core/
+    console-core/
+    app-a-ja/
+    app-a-en/
+    app-b-ja/
+    app-b-en/
+    console-a/
+    console-b/`}
+  steps={[
+    { range: [4, 4], notes: 'ドメイン' },
+    { lines: [5,7,8,9,10], notes: 'アプリのコード' },
+    { lines: [6,11,12], notes: '管理画面のコード' },
+    { range: [5, 6], notes: 'カタログ' },
+    { range: [7, 12], notes: '薄いエントリーポイント' },
+  ]}
+/>
+---
+薄いエントリーポイント
+---
+以下をつなぎ合わせる
+- 固有のmiddleware
+- action(redux-thunk)
+- component
+- routing
+---
+<CodeSurfer
+  title="app.js"
+  code={require("!raw-loader!./assets/codes/app.js")}
+  showNumbers
+  steps={[
+    { ranges: [[4,5],[9,11]], notes: 'storeの作成' },
+    { lines: [4,9], notes: 'baseのstore定義はcoreが持っている' },
+    { lines: [5,10], notes: 'エントリーポイントごとの固有実装はmiddlewareにする' },
+    { lines: [9,10,11], notes: 'reducerやmiddlerwareをどう組み合わせるかはエントリポイント側が決めれる' },
+    { lines: [15], notes: '作ったstoreをreactで使う' },
+    { ranges: [[6,7],[16,20]], notes: 'routing的な定義もエントリーポイント側' },
+    { lines: [5,7,10,18], notes: 'react-navigationのキモい実装も捨てやすいとこに置く' },
+  ]}
+/>
+---
+<CodeSurfer
+  title="middleware"
+  code={require("!raw-loader!./assets/codes/middleware.js")}
+  // showNumbers
+  steps={[
+    { ranges: [[4,5], [10,11]], notes: '普通のmiddlewareの書き方' },
+    { ranges: [[7,8]], notes: 'ここで画面遷移してる' },
+    { lines: [7], notes: 'store, actionからparams作って' },
+    { lines: [8], notes: 'あれば画面遷移' },
+    { ranges: [[13,23]], notes: 'store, actionからparams作るのも何の変哲もなく' },
+    { ranges: [[16,16]], notes: 'react-navigationが欲しがってるモノ返すだけ' },
+    { ranges: [[16,16]], notes: 'https://reactnavigation.org/docs/en/navigation-prop.html#navigate-link-to-other-screens' },
+    { ranges: [[1,100]], notes: 'app-coreがreact-navigationを知ってしまうのを防ぐ' },
+  ]}
+/>
+---
+<CodeSurfer
+  title="container"
+  code={require("!raw-loader!./assets/codes/container.js")}
+  // showNumbers
+  steps={[
+    { ranges: [[2,2],[5,5],[8,11]], notes: 'mapStateToPropsつくって' },
+    { ranges: [[2,2],[4,4],[13,15]], notes: 'mapDispatchToPropsつくって' },
+    { lines: [6,18], notes: 'つかう' },
+  ]}
+/>
+---
+# エントリーポイントはこんな感じ
+```notes
+router仕様がころころ変わって辛い！
+捨てやすいとこに置いておく。
+```
 
 ---
-# domain used by redux
-CQRS
-CQRSにおけるドメイン
-redux thunkがdomainを使うなら
+# core
+app-core, console-core
 
-# 課題
-- selectorsに始まるOOP,FPインピーダンスミスマッチ
-- コンテキスト境界を跨がったドメインオブジェクト設計
+---
+- actions, reducers, componentsを定義していく
+- domain clientもここに実装する
+
+---
+# usecase
+---
+<CodeSurfer
+  title="usecase"
+  code={require("!raw-loader!./assets/codes/usecase.js")}
+  // showNumbers
+  steps={[
+    { ranges: [[4,16]], notes: 'redux-thunkを使ってusecaseを書く' },
+    { ranges: [[4,16]], notes: 'domain clientでもある' },
+    { lines: [5,12,14], notes: 'usecaseのライフサイクルイベントを発行する' },
+    { lines: [5,12,14], notes: 'REQUESTEDでgaやloadingが反応する' },
+    { lines: [5,12,14], notes: 'SUCCEEDEDでサーバー登録などが反応する' },
+    { lines: [5,12,14], notes: 'FAILEDでalertやトーストが反応する' },
+    { lines: [5,12,14], notes: '反応はmeddlewareやreducerに書く' },
+    { ranges: [[1,2],[8,10]], notes: 'domainからentityを持ってきて使う' },
+    { lines: [10], notes: 'eventはドメインイベント' },
+    { lines: [10,12], notes: 'onion architectureの外側はドメインイベントに反応して動く' },
+  ]}
+/>
+
+---
+# domain
+---
+<CodeSurfer
+  title="domain"
+  code={require("!raw-loader!./assets/codes/domain.js")}
+  showNumbers
+  steps={[
+    { lines: [3], notes: '普通にclassで書く' },
+    { lines: [3], notes: '継承は基本的にはしない' },
+    { lines: [3], notes: '関数型でドメイン組んでっても良いと思う' },
+    { ranges: [[4,7]], notes: 'constructorはplainを受け取る' },
+    { ranges: [[4,7]], notes: 'redux stateから復元するため' },
+    { ranges: [[4,7]], notes: '関数で書いてればこの辺気にしなくて良くなりそう' },
+    { ranges: [[9,20]], notes: 'ドメインの仕事をする' },
+    { ranges: [[11,18]], notes: '更新はドメインイベントを通して行う' },
+    { ranges: [[11,18]], notes: 'そのときにサーバーサイドの更新も同時に行う' },
+    { ranges: [[14,16]], notes: '更新にmongodbのoperationを使えるようにしてある' },
+    { ranges: [[14,16]], notes: 'あとで話したい' },
+  ]}
+/>
+
+---
+こんな感じです
+
+---
+なにがしたかったのか
+
+---
+- domainはwebもRNも知らないので両方で使える
+- domainに移ろいゆくコードを入れない(react, redux, ほか)
+- エントリーポイント変えてるので海外版等の対応も細かくできる
+
+---
+- clean architecture
+- onion architecture
+- DDD
+- FP
+
+---
+# こんな感じで開発していきたい！
+
+---
+# まだぜんぜん出来てない！
+
+---
+# 道半ば。。。。
+
+---
+# 一緒にuniversalの夢を見るエンジニアを募集しています！
+
+---
+再掲
+
+<img src="assets/images/yamatatsu.PNG" width="180" />
+
+- CureApp
+
+---
+時間余った？
+
+---
+# [power-assign](https://www.npmjs.com/package/power-assign)
+# [phenyl](https://github.com/phenyl-js/phenyl)
