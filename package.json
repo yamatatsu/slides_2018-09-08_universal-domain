@@ -4,7 +4,7 @@
   "description": "Deck created with mdx-deck",
   "scripts": {
     "start": "mdx-deck deck.mdx",
-    "build": "mdx-deck build deck.mdx",
+    "build": "mdx-deck build --no-html deck.mdx",
     "pdf": "mdx-deck pdf deck.mdx",
     "image": "mdx-deck screenshot deck.mdx",
     "help": "mdx-deck"
@@ -13,12 +13,10 @@
   "author": "Brent Jackson",
   "license": "MIT",
   "devDependencies": {
-    "mdx-deck": "^1.6.7",
-    "mdx-deck-code-surfer": "^0.4.1",
-    "raw-loader": "^0.5.1"
-  },
-  "name": "slides_2018-09-08_universal-domain",
-  "dependencies": {
+    "mdx-deck": "1.x.x",
+    "mdx-deck-code-surfer": "0.x.x",
+    "raw-loader": "^0.5.1",
     "react-grid-system": "^4.3.1"
-  }
+  },
+  "name": "slides_2018-09-08_universal-domain"
 }
