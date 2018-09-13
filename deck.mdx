@@ -1,5 +1,6 @@
 import { Head, Image } from 'mdx-deck'
 import { CodeSurfer } from "mdx-deck-code-surfer"
+import { Container, Row, Col } from 'react-grid-system'
 
 export { default as theme } from './theme'
 
@@ -15,22 +16,29 @@ export { default as theme } from './theme'
 <img src="assets/images/yamatatsu.PNG" width="180" />
 
 - CureApp
-- 医療機器
 - アプリで医療機器を作ってる
-- RN, react, Node.js, mongodb
+- RN, react, Node.js, MongoDB
 
 ---
 # どんなものを作っているのか
 ---
-
-RN
-治療アプリ
-
-react
-医者、社内向けコンソール
-
-Node.js
-mbaas
+<Container style={{ width: 1000, lineHeight: 2, fontSize: 36 }}>
+  <Row>
+    <Col sm={4}>RN</Col>
+    <Col sm={1}>=></Col>
+    <Col sm={7}>治療アプリ</Col>
+  </Row>
+  <Row>
+    <Col sm={4}>react</Col>
+    <Col sm={1}>=></Col>
+    <Col sm={7}>医者、社内向けコンソール</Col>
+  </Row>
+  <Row>
+    <Col sm={4}>Node.js</Col>
+    <Col sm={1}>=></Col>
+    <Col sm={7}>mbaas</Col>
+  </Row>
+</Container>
 
 ---
 再掲
@@ -115,15 +123,15 @@ lernaの説明おわり
 薄いエントリーポイント
 ---
 以下をつなぎ合わせる
-- 固有のmiddleware
-- action(redux-thunk)
+- middleware
+- reducer
+- action
 - component
-- routing
 ---
 <CodeSurfer
   title="app.js"
   code={require("!raw-loader!./assets/codes/app.js")}
-  showNumbers
+  // showNumbers
   steps={[
     { ranges: [[4,5],[9,11]], notes: 'storeの作成' },
     { lines: [4,9], notes: 'baseのstore定義はcoreが持っている' },
@@ -131,6 +139,7 @@ lernaの説明おわり
     { lines: [9,10,11], notes: 'reducerやmiddlerwareをどう組み合わせるかはエントリポイント側が決めれる' },
     { lines: [15], notes: '作ったstoreをreactで使う' },
     { ranges: [[6,7],[16,20]], notes: 'routing的な定義もエントリーポイント側' },
+    { lines: [6,16], notes: 'react-routerとかreact-navigationとかの実装' },
     { lines: [5,7,10,18], notes: 'react-navigationのキモい実装も捨てやすいとこに置く' },
   ]}
 />
@@ -162,7 +171,7 @@ lernaの説明おわり
   ]}
 />
 ---
-# エントリーポイントはこんな感じ
+エントリーポイントはこんな感じ
 ```notes
 router仕様がころころ変わって辛い！
 捨てやすいとこに置いておく。
@@ -174,7 +183,7 @@ app-core, console-core
 
 ---
 - actions, reducers, componentsを定義していく
-- domain clientもここに実装する
+- domain clientの役割もここ
 
 ---
 # usecase
@@ -184,12 +193,12 @@ app-core, console-core
   code={require("!raw-loader!./assets/codes/usecase.js")}
   // showNumbers
   steps={[
-    { ranges: [[4,16]], notes: 'redux-thunkを使ってusecaseを書く' },
+    { ranges: [[4,16]], notes: 'redux-thunkを使ってusecaseを書く(好み)' },
     { ranges: [[4,16]], notes: 'domain clientでもある' },
     { lines: [5,12,14], notes: 'usecaseのライフサイクルイベントを発行する' },
-    { lines: [5,12,14], notes: 'REQUESTEDでgaやloadingが反応する' },
-    { lines: [5,12,14], notes: 'SUCCEEDEDでサーバー登録などが反応する' },
-    { lines: [5,12,14], notes: 'FAILEDでalertやトーストが反応する' },
+    { lines: [5], notes: 'REQUESTEDでgaやloadingが反応する' },
+    { lines: [12], notes: 'SUCCEEDEDでサーバー登録などが反応する' },
+    { lines: [14], notes: 'FAILEDでalertやトーストが反応する' },
     { lines: [5,12,14], notes: '反応はmeddlewareやreducerに書く' },
     { ranges: [[1,2],[8,10]], notes: 'domainからentityを持ってきて使う' },
     { lines: [10], notes: 'eventはドメインイベント' },
@@ -203,10 +212,10 @@ app-core, console-core
 <CodeSurfer
   title="domain"
   code={require("!raw-loader!./assets/codes/domain.js")}
-  showNumbers
+  // showNumbers
   steps={[
     { lines: [3], notes: '普通にclassで書く' },
-    { lines: [3], notes: '継承は基本的にはしない' },
+    { lines: [3], notes: 'FWの継承はしない' },
     { lines: [3], notes: '関数型でドメイン組んでっても良いと思う' },
     { ranges: [[4,7]], notes: 'constructorはplainを受け取る' },
     { ranges: [[4,7]], notes: 'redux stateから復元するため' },

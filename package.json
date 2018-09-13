@@ -17,5 +17,8 @@
     "mdx-deck-code-surfer": "^0.4.1",
     "raw-loader": "^0.5.1"
   },
-  "name": "slides_2018-09-08_universal-domain"
+  "name": "slides_2018-09-08_universal-domain",
+  "dependencies": {
+    "react-grid-system": "^4.3.1"
+  }
 }
